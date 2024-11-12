@@ -4,7 +4,7 @@ use burn::prelude::*;
 mod model;
 
 type Backend = Wgpu<f32, i32>;
-use burn::record::{HalfPrecisionSettings, NamedMpkFileRecorder};
+use burn::record::{FullPrecisionSettings, BinFileRecorder};
 
 fn main() {
     let device = Default::default();
@@ -17,7 +17,7 @@ fn main() {
     println!("{}", my_model.forward(dummy_input));
 
     println!("{}", tensor_1 + tensor_2);
-    my_model.save_file("model", 
-    &NamedMpkFileRecorder::<HalfPrecisionSettings>::new())
-    .expect("failed to save");
+    let recorder = BinFileRecorder::<FullPrecisionSettings>::default();
+    my_model.save_file("model", &recorder)
+        .expect("Failed to save the model");
 }

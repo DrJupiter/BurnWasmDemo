@@ -17,7 +17,6 @@ extern "C" {
 #[wasm_bindgen]
 pub fn greet(number: Vec<f32>) -> f32 {
     let sum = number.into_iter().sum::<f32>();
-    // alert(&*format!("{}", &sum));
     return sum
 }
 
@@ -34,25 +33,19 @@ impl MyModel {
         Self { model : None }
     }
 
-    pub async fn inference(&mut self, input: &[f32]) -> Array {
+    pub async fn inference(&mut self, input: &[f32]) -> Vec<f32> {
         if self.model.is_none() {
         // there should be a match statement here for multibackend support.
-            self.model = state::build().await;
+            self.model = Some(state::build().await);
         }
-    let device = Default::default();
-    let model = self.model.as_ref().unwrap();
-    let dummy = Tensor::<Backend, 3>::from_floats([[[2., 3., 4.], [3., 5., 5.], [3.,0., 2.]]], &device);
-    let output = model.forward(dummy);
+    //let device = Default::default();
+    // let model = self.model.as_ref().unwrap();
+    //let dummy = Tensor::<Backend, 3>::from_data([[[2., 3., 4.], [3., 5., 5.], [3.,0., 2.]]], &device);
+    //let output = model.forward(dummy);
 
-    let dummy = Tensor::<Backend, 3>::from_data([[[2., 3., 4.], [3., 5., 5.], [3.,0., 2.]]], &device);
-    let data = dummy.into_data_async().await;
-    let array = Array::new();
-    for batch in data.iter::<f32>() {
-        array.push(&batch.into());
-        }
+    return vec![0.];
          
     
-    return array 
     
 
     }
