@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport", content="width=device-width">
+    </head>
+</head>
+    <body>
+  <script type="module">
+    import init, { greet, MyModel } from './pkg/burn_app.js';
+    await init();
+    let num = greet([2.55,-4.32]);
+    console.log(num - (2.5+0.4));
+    console.log(2.5+0.4);
+    console.log(num);
+    let model = new MyModel;
+    model.inference([[[2., 3., 4.], [3., 5., 5.], [3.,0., 2.]]]).then((res) => (console.log(res)));
+  </script>
+</body>
+</html>
