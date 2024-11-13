@@ -26,7 +26,7 @@ pub fn forward(&self, data: Tensor<B, 3>) -> Tensor<B, 4> {
     let [batch_size, height, width] = data.dims();
 
     let x = data.unsqueeze::<4>();
-    let x = self.conv1.forward(x);
+    let y = self.conv1.forward(x.clone());
 
     return x
 

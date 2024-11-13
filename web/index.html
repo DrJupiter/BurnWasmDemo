@@ -14,7 +14,8 @@
     console.log(2.5+0.4);
     console.log(num);
     let model = new MyModel;
-    model.inference([2., 3., 4., 3., 5., 5., 3.,0., 2.]).then((res) => (console.log(res)));
+    model.then( (m) => (
+    m.inference([0., 0., 0., 0., 0., 0., 0.,0., 0.]).then((res) => (alert(res)))));
   </script>
 </body>
 </html>

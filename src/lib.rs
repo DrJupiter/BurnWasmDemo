@@ -1,12 +1,13 @@
 use wasm_bindgen::prelude::*;
 mod model;
-mod state;
+// mod state;
 use burn::prelude::*;
+use model::{ModelConfig, Model};
+
+use burn::backend::wgpu::{init_async, AutoGraphicsApi, Wgpu, WgpuDevice};
 
 
-use js_sys::Array;
 
-type Backend = burn::backend::Wgpu;
 
 #[wasm_bindgen]
 extern "C" {
@@ -22,28 +23,29 @@ pub fn greet(number: Vec<f32>) -> f32 {
 
 #[wasm_bindgen]
 pub struct MyModel {
-    model: Option<model::Model<Backend>>,
+    model: model::Model<Wgpu<f32, i32>>,
+    device: WgpuDevice,
 }
 
 #[wasm_bindgen]
 impl MyModel {
     
     #[wasm_bindgen(constructor)]
-    pub fn new() -> Self {
-        Self { model : None }
+    pub async fn new() -> Self {
+        let device = WgpuDevice::default();
+        init_async::<AutoGraphicsApi>(&device, Default::default()).await;
+        Self { model : ModelConfig::new().init(&device), device: device }
     }
 
     pub async fn inference(&mut self, input: &[f32]) -> Vec<f32> {
-        if self.model.is_none() {
-        // there should be a match statement here for multibackend support.
-            self.model = Some(state::build().await);
-        }
-    //let device = Default::default();
     // let model = self.model.as_ref().unwrap();
-    //let dummy = Tensor::<Backend, 3>::from_data([[[2., 3., 4.], [3., 5., 5.], [3.,0., 2.]]], &device);
-    //let output = model.forward(dummy);
+    let input = Tensor::<Wgpu<f32, i32>, 1>::from_floats(input, &self.device).reshape([1,3,3]);
+    let dummy = Tensor::<Wgpu<f32, i32>, 3>::from_data([[[2., 3., 4.], [3., 5., 5.], [3.,0., 2.]]], &self.device);
+    let output = self.model.forward(input);
+    let output = output.into_data_async().await;
+    let output = output.convert::<f32>().to_vec().unwrap();
 
-    return vec![0.];
+    return output;
          
     
     
